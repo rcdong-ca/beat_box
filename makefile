@@ -11,8 +11,8 @@ CC_C = $(CROSS_TOOL)gcc
 CFLAGS = -Wall -g -std=c99 -D _POSIX_C_SOURCE=200809L 
 LFLAGS = -L$(HOME)/cmpt433/public/asound_lib_BBB
 
-all: wav main.c audioMixer_template.h audioMixer_template.c
-	$(CC_C) $(CFLAGS) main.c audioMixer_template.c -o $(OUTDIR)/$(TARGET)  $(LFLAGS) -lpthread -lasound
+all: wav main.c audioMixer_template.h audioMixer_template.c beat_mode.h beat_mode.c joystick_control.h joystick_control.c
+	$(CC_C) $(CFLAGS) main.c audioMixer_template.c beat_mode.c joystick_control.c -o $(OUTDIR)/$(TARGET)  $(LFLAGS) -lpthread -lasound
 
 wav:
 	mkdir -p $(PUBDIR)/beatbox-wav-files/ 

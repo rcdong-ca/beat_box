@@ -25,6 +25,7 @@ static snd_pcm_t *handle;
 static unsigned long playbackBufferSize = 0;
 static short *playbackBuffer = NULL;
 
+static int mode = 1;
 
 // Currently active (waiting to be played) sound bites
 #define MAX_SOUND_BITES 30
@@ -165,8 +166,8 @@ void AudioMixer_queueSound(wavedata_t *pSound)
 
 	//Find empty sound bite spot:
 
-	pthread_mutex_lock(&audioMutex);
 	int empty = 0;
+	pthread_mutex_lock(&audioMutex);
 	while (soundBites[empty].pSound!=NULL && empty< MAX_SOUND_BITES) {
 		empty++;
 	}
@@ -311,20 +312,20 @@ static void fillPlaybackBuffer(short *playbackBuffer, int size)
 				playbackCount = 0;
 				audio_len = temp->pSound->numSamples;
 				audio_loc= temp->location;
-				for (; audio_loc < audio_len && playbackCount<size; audio_loc++) {
+				for (; audio_loc < audio_len && playbackCount < playbackBufferSize; audio_loc++) {
 					val = temp->pSound->pData[audio_loc] + playbackBuffer[playbackCount];
 					if (val > SHRT_MAX)
 						val = SHRT_MAX;
-					else if ( val < SHRT_MIN)
+					if ( val < SHRT_MIN)
 						val = SHRT_MIN;
-					playbackBuffer[playbackCount] = val;
+					playbackBuffer[playbackCount] =  val;
 					playbackCount++;
 				}
 				//printf("pos = %d   audio loc = %d, audio len = %d\n", i, audio_loc, audio_len);
 				
 				soundBites[i].location = audio_loc;
 				//check if soundByte has finished playing, free the soundByte and set it to null!
-				if (audio_loc == audio_len) {
+				if (audio_loc >= audio_len) {
 					soundBites[i].pSound = NULL;
 					soundBites[i].location = 0;
 					printf("freeing the soundbyte!\n");
@@ -370,12 +371,12 @@ void* playbackThread(void* arg)
 }
 
 void AudioMixer_standardRockBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_t* Snare) { //THere will be a thread that plays this beat
-
+	printf("ROCK!!\n");
 	long msec = (long)( 60/BPM/2 * 1000);
 	struct timespec delay;
 	delay.tv_sec = msec / 1000;
 	delay.tv_nsec = (msec % 1000) * 1000000;
-	printf("ms = %ld, BPM = %d\n", msec, BPM);
+	printf("ms = %ld, BPM = %lf\n", msec, BPM);
 	int count = 1;
 	int it = 0;
 	while (it<1) {	
@@ -401,6 +402,52 @@ void AudioMixer_standardRockBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_
 	}
 }
 
+
+
+void AudioMixer_noBeat(void){
+    return;
+}
+
+void AudioMixer_customBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_t* Snare){
+    //Make a beat
+	printf("Custom!!\n");
+    long msec = (long)( 60/BPM/2 * 1000);
+	struct timespec delay;
+	delay.tv_sec = msec / 1000;
+	delay.tv_nsec = (msec % 1000) * 1000000;
+    AudioMixer_queueSound(Snare);
+    AudioMixer_queueSound(Snare);
+    // AudioMixer_queueSound(Hi_hat);
+    nanosleep(&delay, (struct timespec *)NULL);
+
+	AudioMixer_queueSound(Snare);
+    AudioMixer_queueSound(Snare);
+    // AudioMixer_queueSound(Hi_hat);
+    nanosleep(&delay, (struct timespec *)NULL);
+
+    AudioMixer_queueSound(Hi_hat);
+    nanosleep(&delay, (struct timespec *)NULL);
+
+    AudioMixer_queueSound(Base);
+    nanosleep(&delay, (struct timespec *)NULL);
+
+    AudioMixer_queueSound(Hi_hat);
+    nanosleep(&delay, (struct timespec *)NULL);
+
+    AudioMixer_queueSound(Base);
+    nanosleep(&delay, (struct timespec *)NULL);
+
+
+    AudioMixer_queueSound(Hi_hat);
+    nanosleep(&delay, (struct timespec *)NULL);
+
+    AudioMixer_queueSound(Base);
+    nanosleep(&delay, (struct timespec *)NULL);
+
+    AudioMixer_queueSound(Snare);
+    nanosleep(&delay, (struct timespec *)NULL);
+}
+
 double AudioMixer_getBPM(void) {
 	return BPM;
 }
@@ -413,6 +460,24 @@ void AudioMixer_setBPM(double num) {
 	else if (BPM < AUDIOMIXER_MIN_BPM) {
 		BPM = AUDIOMIXER_MIN_BPM;
 	}
+}
+
+void AudioMixer_next(void){
+	mode++;
+	if(mode > 2){
+		mode = 0;
+	}
+}
+
+void AudioMixer_prev(void){
+	mode--;
+	if(mode<0){
+		mode =2;
+	}
+}
+
+int AudioMixer_getMode(void){
+	return mode;
 }
 
 

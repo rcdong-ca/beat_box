@@ -12,6 +12,7 @@ typedef struct {
 #define AUDIOMIXER_MAX_BPM 300
 #define AUDIOMIXER_MIN_BPM 40
 
+
 // init() must be called before any other functions,
 // cleanup() must be called last to stop playback threads and free memory.
 void AudioMixer_init(void);
@@ -36,5 +37,11 @@ double AudioMixer_getBPM(void);
 void AudioMixer_setBPM(double num);
 
 void AudioMixer_standardRockBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_t* Snare);
+void AudioMixer_customBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_t* Snare);
+void AudioMixer_noBeat(void);
+
+void AudioMixer_next(void);
+void AudioMixer_prev(void);
+int AudioMixer_getMode(void);
 
 #endif
