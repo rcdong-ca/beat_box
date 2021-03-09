@@ -301,7 +301,7 @@ static void fillPlaybackBuffer(short *playbackBuffer, int size)
 	int playbackCount = 0;
 	int audio_len = 0;
 	int audio_loc = 0;
-	short val = 0;
+	int val = 0;
 	pthread_mutex_lock(&audioMutex);
 	{
 		//given that each sample is sizeof(short)
@@ -318,7 +318,7 @@ static void fillPlaybackBuffer(short *playbackBuffer, int size)
 						val = SHRT_MAX;
 					if ( val < SHRT_MIN)
 						val = SHRT_MIN;
-					playbackBuffer[playbackCount] =  val;
+					playbackBuffer[playbackCount] =  (short) val;
 					playbackCount++;
 				}
 				//printf("pos = %d   audio loc = %d, audio len = %d\n", i, audio_loc, audio_len);
