@@ -320,6 +320,7 @@ static void fillPlaybackBuffer(short *playbackBuffer, int size)
 						val = SHRT_MIN;
 					playbackBuffer[playbackCount] =  (short) val;
 					playbackCount++;
+					
 				}
 				//printf("pos = %d   audio loc = %d, audio len = %d\n", i, audio_loc, audio_len);
 				

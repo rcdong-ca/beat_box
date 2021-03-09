@@ -1,4 +1,4 @@
-TARGET= as3
+TARGET= as3_i2c
 
 
 
@@ -14,9 +14,12 @@ LFLAGS = -L$(HOME)/cmpt433/public/asound_lib_BBB
 all: wav main.c audioMixer_template.h audioMixer_template.c beat_mode.h beat_mode.c joystick_control.h joystick_control.c
 	$(CC_C) $(CFLAGS) main.c audioMixer_template.c beat_mode.c joystick_control.c -o $(OUTDIR)/$(TARGET)  $(LFLAGS) -lpthread -lasound
 
-wav:
-	mkdir -p $(PUBDIR)/beatbox-wav-files/ 
-	cp -R beatbox-wave-files/* $(PUBDIR)/beatbox-wav-files/ 
+all: i2cHandler.c
+	$(CC_C) $(CFLAGS) i2cHandler.c -o $(OUTDIR)/$(TARGET)
+
+# wav:
+# 	mkdir -p $(PUBDIR)/beatbox-wav-files/ 
+# 	cp -R beatbox-wave-files/* $(PUBDIR)/beatbox-wav-files/ 
 	
 
 # node:
