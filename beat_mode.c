@@ -11,20 +11,40 @@ static wavedata_t base;
 static wavedata_t hi_hat;
 static wavedata_t snare;
 
-void* beatBoxThread(void* t){
+void beatBoxInit(void){
     AudioMixer_readWaveFileIntoMemory(BASE, &base);
     AudioMixer_readWaveFileIntoMemory(HI_HAT, &hi_hat);
     AudioMixer_readWaveFileIntoMemory(SNARE, &snare);
+}
+
+void* beatBoxThread(void* t){
+    beatBoxInit();
     while(1){
-        if(AudioMixer_getMode() ==0){
-            AudioMixer_noBeat();
-        }
-        if(AudioMixer_getMode() == 1){
-            AudioMixer_standardRockBeat(&base, &hi_hat, &snare);
-        }
-        if(AudioMixer_getMode() == 2){
-            AudioMixer_customBeat(&base, &hi_hat, &snare);
-        }
+        // if(AudioMixer_getMode() ==0){
+        //     AudioMixer_noBeat();
+        // }
+        // if(AudioMixer_getMode() == 1){
+        //     AudioMixer_standardRockBeat(&base, &hi_hat, &snare);
+        // }
+        // if(AudioMixer_getMode() == 2){
+        //     AudioMixer_customBeat(&base, &hi_hat, &snare);
+        // }
     }
     pthread_exit(NULL);
+}
+
+void beatBoxSingle(wavedata_t *psound){
+    AudioMixer_queueSound(psound);
+}
+
+void beatBox_playBase(void){
+    beatBoxSingle(&base);
+}
+
+void beatBox_playHiHat(void){
+    beatBoxSingle(&hi_hat);
+}
+
+void beatBox_playSnare(void){
+    beatBoxSingle(&snare);
 }

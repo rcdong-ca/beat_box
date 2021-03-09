@@ -9,6 +9,9 @@
 #include<sys/ioctl.h>
 #include<linux/i2c.h>
 #include<linux/i2c-dev.h>
+#include <time.h>
+#include <pthread.h>
+#include "beat_mode.h"
 
 #define I2CDRV_LINUX_BUS0 "/dev/i2c-0"
 #define I2CDRV_LINUX_BUS1 "/dev/i2c-1"
@@ -17,6 +20,11 @@
 //I2c Device Info
 #define I2C_DEVICE_ADDRESS 0x1C
 #define REG_WHO_AM_I 0x0D
+
+#define THREASH 13000
+#define Z_G_FORCE 16400
+
+static int i2cHandlerEnd = 1;
 
 //Turn off, on GPIO pins!
 // void set_GPIO_pin(int pin_num, int val) {
@@ -44,7 +52,7 @@ static int initI2cBus(char* bus, int address){
     return i2cFileDesc;
 }
 
-static unsigned char readI2cReg(int i2cFileDesc, unsigned char regAddr) {
+static unsigned char* readI2cReg(int i2cFileDesc, unsigned char regAddr) {
     // To read a register, must first write the address
     int res = write(i2cFileDesc, &regAddr, sizeof(regAddr));
     if (res != sizeof(regAddr)) {
@@ -62,12 +70,12 @@ static unsigned char readI2cReg(int i2cFileDesc, unsigned char regAddr) {
         printf("val = %02x  ", value[i]);
     }
     printf("\n");
-    return *value;
+    return value;
 }
 
 
 void myI2cget(int i2cFileDesc, unsigned char regAddr) {
-   char buffer[1];
+//    char buffer[1];
    int fd = open(I2CDRV_LINUX_BUS1, O_RDWR);
    ioctl(i2cFileDesc, I2C_SLAVE, 0x1C);
    write(i2cFileDesc, "\r", 1);
@@ -84,18 +92,55 @@ static void writeI2cReg(int i2cFileDesc, unsigned char regAddr, unsigned char va
     if (res != 2) {
         perror("I2C: Unable to write i2c register."); 
         exit(1);
-        }
+    }
 }
 
-int main() {
+void endI2cHandler(void){
+    i2cHandlerEnd = 0;
+}
+
+void* i2cHandlerInit(void* t){
     //first attempt to read the who am i register
+    beatBoxInit();
+    struct timespec time1;
+    time1.tv_sec = 0;
+    time1.tv_nsec = 300000000;
     int i2cFileDesc = initI2cBus(I2CDRV_LINUX_BUS1, I2C_DEVICE_ADDRESS);
 
     writeI2cReg(i2cFileDesc, 0x2A, 0x01);
     printf("Setting to Active Mode\n");
     printf("Reading the pin\n");
-    //unsigned char regVal = readI2cReg(i2cFileDesc, 0x29);
-    // myI2cget(i2cFileDesc, 0x2A);
-    //printf("Reg OUT-A = 0x%02x\n", regVal);
+
+    while(i2cHandlerEnd > 0){
+         unsigned char* regVal = readI2cReg(i2cFileDesc, 0x00);
+
+        __int16_t x = (regVal[1] << 8 | regVal[2]);
+        __int16_t y = (regVal[3] << 8 | regVal[4]);
+        __int16_t z = (regVal[5] << 8 | regVal[6]) - 16400;
+
+        if(x < -THREASH || x > THREASH){
+            beatBox_playBase();
+            nanosleep(&time1, (struct timespec*)NULL);
+            continue;
+        }
+
+        if(y < -THREASH || y > THREASH){
+            beatBox_playHiHat();
+            nanosleep(&time1, (struct timespec*)NULL);
+            continue;
+        }
+
+        if(z < -THREASH || z > THREASH){
+            beatBox_playSnare();
+            nanosleep(&time1, (struct timespec*)NULL);
+            continue;
+        }
+        
+        printf("x: %d, y: %d, z: %d\n", x, y, z);
+        free(regVal);
+        regVal = NULL;
+    }
+
+    pthread_exit(NULL);
     return 0;
 }
