@@ -210,7 +210,9 @@ int AudioMixer_getVolume()
 {
 	// Return the cached volume; good enough unless someone is changing
 	// the volume through other means and the cached value is out of date.
+	pthread_mutex_lock(&audioMutex);
 	return volume;
+	pthread_mutex_unlock(&audioMutex);
 }
 
 // Function copied from:
@@ -223,6 +225,8 @@ void AudioMixer_setVolume(int newVolume)
 		printf("ERROR: Volume must be between 0 and 100.\n");
 		return;
 	}
+	pthread_mutex_lock(&audioMutex);
+
 	volume = newVolume;
 
     long min, max;
@@ -245,6 +249,8 @@ void AudioMixer_setVolume(int newVolume)
     snd_mixer_selem_set_playback_volume_all(elem, volume * max / 100);
 
     snd_mixer_close(handle);
+
+	pthread_mutex_unlock(&audioMutex);
 }
 
 
@@ -450,10 +456,13 @@ void AudioMixer_customBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_t* Sna
 }
 
 double AudioMixer_getBPM(void) {
+	pthread_mutex_lock(&audioMutex);
 	return BPM;
+	pthread_mutex_unlock(&audioMutex);
 }
 
 void AudioMixer_setBPM(double num) {
+	pthread_mutex_lock(&audioMutex);
 	BPM =  num;
 	if (BPM > AUDIOMIXER_MAX_BPM) {
 		BPM = AUDIOMIXER_MAX_BPM;
@@ -461,24 +470,31 @@ void AudioMixer_setBPM(double num) {
 	else if (BPM < AUDIOMIXER_MIN_BPM) {
 		BPM = AUDIOMIXER_MIN_BPM;
 	}
+	pthread_mutex_unlock(&audioMutex);
 }
 
 void AudioMixer_next(void){
+	pthread_mutex_lock(&audioMutex);
 	mode++;
 	if(mode > 2){
 		mode = 0;
 	}
+	pthread_mutex_unlock(&audioMutex);
 }
 
-void AudioMixer_prev(void){
+void AudioMixer_prev(void){ //may not need it
+	pthread_mutex_lock(&audioMutex);
 	mode--;
 	if(mode<0){
 		mode =2;
 	}
+	pthread_mutex_unlock(&audioMutex);
 }
 
 int AudioMixer_getMode(void){
+	pthread_mutex_lock(&audioMutex);
 	return mode;
+	pthread_mutex_unlock(&audioMutex);
 }
 
 

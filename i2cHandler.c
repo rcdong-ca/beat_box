@@ -21,7 +21,7 @@
 #define I2C_DEVICE_ADDRESS 0x1C
 #define REG_WHO_AM_I 0x0D
 
-#define THREASH 13000
+#define THREASH 12500
 #define Z_G_FORCE 16400
 
 static int i2cHandlerEnd = 1;
@@ -111,12 +111,13 @@ void* i2cHandlerInit(void* t){
     printf("Setting to Active Mode\n");
     printf("Reading the pin\n");
 
+    
     while(i2cHandlerEnd > 0){
          unsigned char* regVal = readI2cReg(i2cFileDesc, 0x00);
 
         __int16_t x = (regVal[1] << 8 | regVal[2]);
         __int16_t y = (regVal[3] << 8 | regVal[4]);
-        __int16_t z = (regVal[5] << 8 | regVal[6]) - 16400;
+        __int16_t z = (regVal[5] << 8 | regVal[6]) - Z_G_FORCE;
 
         if(x < -THREASH || x > THREASH){
             beatBox_playBase();
@@ -135,7 +136,7 @@ void* i2cHandlerInit(void* t){
             nanosleep(&time1, (struct timespec*)NULL);
             continue;
         }
-        
+
         printf("x: %d, y: %d, z: %d\n", x, y, z);
         free(regVal);
         regVal = NULL;
