@@ -51,6 +51,10 @@ unsigned char* readI2cReg(int i2cFileDesc, unsigned char regAddr) {
         perror("I2C: Unable to read from i2c register");
         exit(1);
     }
+    // for (int i =0; i<7;i++) {
+    //     printf("val = %02x  ", value[i]);
+    // }
+    //printf("\n");
     return value;
 }
 
@@ -117,8 +121,8 @@ void* i2cHandlerInit(void* t){
             nanosleep(&time1, (struct timespec*)NULL);
             continue;
         }
-
-        // printf("x: %d, y: %d, z: %d\n", x, y, z);
+        
+        //printf("x: %d, y: %d, z: %d\n", x, y, z);
         free(regVal);
         regVal = NULL;
     }

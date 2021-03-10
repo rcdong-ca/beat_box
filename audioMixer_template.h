@@ -43,5 +43,6 @@ void AudioMixer_noBeat(void);
 void AudioMixer_next(void);
 void AudioMixer_prev(void);
 int AudioMixer_getMode(void);
+void AudioMixer_setMode(int num);
 
 #endif

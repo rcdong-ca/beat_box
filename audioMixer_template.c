@@ -11,6 +11,9 @@
 
 
 
+//TODO: add a  mutex for the modes, audio, etc, since it can be controled by either the beagle bone
+//or the website
+
 static snd_pcm_t *handle;
 
 #define DEFAULT_VOLUME 80
@@ -527,6 +530,10 @@ int AudioMixer_getMode(void){
 	return ret;
 }
 
+void AudioMixer_setMode(int n) {
+	printf("N is %d\n", n);
+	mode = n;
+}
 
 
 
