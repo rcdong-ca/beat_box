@@ -20,15 +20,15 @@ void beatBoxInit(void){
 void* beatBoxThread(void* t){
     beatBoxInit();
     while(1){
-        // if(AudioMixer_getMode() ==0){
-        //     AudioMixer_noBeat();
-        // }
-        // if(AudioMixer_getMode() == 1){
-        //     AudioMixer_standardRockBeat(&base, &hi_hat, &snare);
-        // }
-        // if(AudioMixer_getMode() == 2){
-        //     AudioMixer_customBeat(&base, &hi_hat, &snare);
-        // }
+        if(AudioMixer_getMode() ==0){
+            AudioMixer_noBeat();
+        }
+        if(AudioMixer_getMode() == 1){
+            AudioMixer_standardRockBeat(&base, &hi_hat, &snare);
+        }
+        if(AudioMixer_getMode() == 2){
+            AudioMixer_customBeat(&base, &hi_hat, &snare);
+        }
     }
     pthread_exit(NULL);
 }

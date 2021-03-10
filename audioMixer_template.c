@@ -211,8 +211,9 @@ int AudioMixer_getVolume()
 	// Return the cached volume; good enough unless someone is changing
 	// the volume through other means and the cached value is out of date.
 	pthread_mutex_lock(&audioMutex);
-	return volume;
+	int ret = volume;
 	pthread_mutex_unlock(&audioMutex);
+	return ret;
 }
 
 // Function copied from:
@@ -457,8 +458,9 @@ void AudioMixer_customBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_t* Sna
 
 double AudioMixer_getBPM(void) {
 	pthread_mutex_lock(&audioMutex);
-	return BPM;
+	int ret = BPM;
 	pthread_mutex_unlock(&audioMutex);
+	return ret;
 }
 
 void AudioMixer_setBPM(double num) {
@@ -493,8 +495,9 @@ void AudioMixer_prev(void){ //may not need it
 
 int AudioMixer_getMode(void){
 	pthread_mutex_lock(&audioMutex);
-	return mode;
+	int ret = mode;
 	pthread_mutex_unlock(&audioMutex);
+	return ret;
 }
 
 

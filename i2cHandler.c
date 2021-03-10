@@ -42,7 +42,7 @@ static int i2cHandlerEnd = 1;
 //     return ;
 // }
 
-static int initI2cBus(char* bus, int address){
+int initI2cBus(char* bus, int address){
     int i2cFileDesc = open(bus, O_RDWR);
     int result = ioctl(i2cFileDesc, I2C_SLAVE, address);
     if (result < 0) {
@@ -52,7 +52,7 @@ static int initI2cBus(char* bus, int address){
     return i2cFileDesc;
 }
 
-static unsigned char* readI2cReg(int i2cFileDesc, unsigned char regAddr) {
+unsigned char* readI2cReg(int i2cFileDesc, unsigned char regAddr) {
     // To read a register, must first write the address
     int res = write(i2cFileDesc, &regAddr, sizeof(regAddr));
     if (res != sizeof(regAddr)) {
@@ -84,7 +84,7 @@ void myI2cget(int i2cFileDesc, unsigned char regAddr) {
 
 }
 
-static void writeI2cReg(int i2cFileDesc, unsigned char regAddr, unsigned char value){
+void writeI2cReg(int i2cFileDesc, unsigned char regAddr, unsigned char value){
     unsigned char buff[2];
     buff[0] = regAddr;
     buff[1] = value;

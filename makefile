@@ -1,7 +1,5 @@
 TARGET= as3
 
-
-
 PUBDIR = $(HOME)/cmpt433/public/myApps
 OUTDIR = $(PUBDIR)
 CROSS_TOOL = arm-linux-gnueabihf-
