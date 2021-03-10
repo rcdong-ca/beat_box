@@ -119,6 +119,19 @@ $(document).ready(function() {
         console.log("DRUM SOUND PLAYED")
     })
 
+    socket.on("set mode", function(str) {
+        console.log("mode received = "+str)
+        var res = str
+        var theMode = "None"
+        if (res =="1") {
+            theMode = "Rock#1"
+        }
+        else if (res=="2") {
+            theMode = "Custom2"
+        }
+        $("#modeid").html(theMode)
+    })
+
     socket.on('get uptime', function(time) {
         var res = time.split(" ")
         var seconds = parseFloat(res[0])

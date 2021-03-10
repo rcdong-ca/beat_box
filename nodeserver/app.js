@@ -82,6 +82,9 @@ udpSocket.on("message", (msg, rinfo) => {                                       
     else if (resCheck=="DRUM") {
         io.sockets.emit("set drum")
     }
+    else if (resCheck=="mode") {
+        io.sockets.emit("set mode", res.substr(5))
+    }
 })
 
 udpSocket.on("listening", ()=> {

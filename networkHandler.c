@@ -30,7 +30,6 @@ int mode_change(char* recv_buffer, char* snd_buffer, int msg_len) {
     int val = 0;
     printf("recv buf = %s\n", recv_buffer);
     if (strncmp(recv_buffer, "mode:0", msg_len)==0 ) {      //Set to beat to None!
-        printf("HHHHHHHH IM AT ZERO\n");
         AudioMixer_setMode(0);
     }
     else if (strncmp(recv_buffer, "mode:1", msg_len)==0 ) { //set to standard rock beat

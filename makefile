@@ -23,7 +23,7 @@ wav:
 
 # node:
 # 	mkdir -p $(PUBDIR)/beatbox-server-copy/ 
-# 	cp -R as3-server/* $(PUBDIR)/beatbox-server-copy/ 
+# 	cp -R nodeserver/* $(PUBDIR)/beatbox-server-copy/ 
 # 	cd $(PUBDIR)/beatbox-server-copy/ && npm install
 
 clean:
