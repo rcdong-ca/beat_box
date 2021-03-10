@@ -32,19 +32,19 @@ io.on('connection', (socket) => {
     })
 
     socket.on("set change", (msg) => {                     //send msg to C app
-        udpSocket.send(msg, targetPort, '192.168.7.2', (err) => {
+        udpSocket.send(msg, targetPort, 'localhost', (err) => {
             console.log("sening packet to C app...")
         })
     })
 
     socket.on("get default", (msg) => {                     //send msg to C app
-        udpSocket.send(msg, targetPort, '192.168.7.2', (err) => {
+        udpSocket.send(msg, targetPort, 'localhost', (err) => {
             console.log("sening default packet to C app...")
         })
     })
 
     socket.on('set drum', (msg) => {
-        udpSocket.send(msg, targetPort, '192.168.7.2', (err) => {
+        udpSocket.send(msg, targetPort, 'localhost', (err) => {
             console.log("sending drum packet to C app")
         })
     })
