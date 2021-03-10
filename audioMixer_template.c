@@ -387,7 +387,7 @@ void AudioMixer_standardRockBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_
 	printf("ms = %ld, BPM = %lf\n", msec, BPM);
 	int count = 1;
 	int it = 0;
-	while (it<1) {	
+	while (it<1 && AudioMixer_getMode() == 1) {	
 		if (count==1) {
 			AudioMixer_queueSound(Hi_hat);
 			AudioMixer_queueSound(Base);
@@ -425,34 +425,61 @@ void AudioMixer_customBeat(wavedata_t* Base, wavedata_t* Hi_hat, wavedata_t* Sna
 	delay.tv_nsec = (msec % 1000) * 1000000;
     AudioMixer_queueSound(Snare);
     AudioMixer_queueSound(Snare);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     // AudioMixer_queueSound(Hi_hat);
     nanosleep(&delay, (struct timespec *)NULL);
 
 	AudioMixer_queueSound(Snare);
     AudioMixer_queueSound(Snare);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     // AudioMixer_queueSound(Hi_hat);
     nanosleep(&delay, (struct timespec *)NULL);
 
     AudioMixer_queueSound(Hi_hat);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     nanosleep(&delay, (struct timespec *)NULL);
 
     AudioMixer_queueSound(Base);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     nanosleep(&delay, (struct timespec *)NULL);
 
     AudioMixer_queueSound(Hi_hat);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     nanosleep(&delay, (struct timespec *)NULL);
 
     AudioMixer_queueSound(Base);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     nanosleep(&delay, (struct timespec *)NULL);
 
 
     AudioMixer_queueSound(Hi_hat);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     nanosleep(&delay, (struct timespec *)NULL);
 
     AudioMixer_queueSound(Base);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     nanosleep(&delay, (struct timespec *)NULL);
 
     AudioMixer_queueSound(Snare);
+	if(AudioMixer_getMode() != 2){
+		return;
+	}
     nanosleep(&delay, (struct timespec *)NULL);
 }
 

@@ -9,5 +9,6 @@ void beatBoxSingle(wavedata_t *psound);
 void beatBox_playBase(void);
 void beatBox_playHiHat(void);
 void beatBox_playSnare(void);
+void beatBoxCleanup(void);
 
 #endif

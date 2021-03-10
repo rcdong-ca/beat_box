@@ -17,6 +17,12 @@ void beatBoxInit(void){
     AudioMixer_readWaveFileIntoMemory(SNARE, &snare);
 }
 
+void beatBoxCleanup(void){
+    AudioMixer_freeWaveFileData(&base);
+    AudioMixer_freeWaveFileData(&hi_hat);
+    AudioMixer_freeWaveFileData(&snare);
+}
+
 void* beatBoxThread(void* t){
     beatBoxInit();
     while(1){
@@ -30,6 +36,7 @@ void* beatBoxThread(void* t){
             AudioMixer_customBeat(&base, &hi_hat, &snare);
         }
     }
+    beatBoxCleanup();
     pthread_exit(NULL);
 }
 

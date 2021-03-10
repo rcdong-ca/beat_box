@@ -21,26 +21,11 @@
 #define I2C_DEVICE_ADDRESS 0x1C
 #define REG_WHO_AM_I 0x0D
 
-#define THREASH 12500
+#define X_Y_THRESH 12000
+#define Z_THRESH 13000
 #define Z_G_FORCE 16400
 
 static int i2cHandlerEnd = 1;
-
-//Turn off, on GPIO pins!
-// void set_GPIO_pin(int pin_num, int val) {
-//     FILE* fd;
-//     if (pin_num == 61)
-//         fd = fopen(GPIO_61, "w");
-//     else if  (pin_num==44)
-//         fd = fopen(GPIO_44, "w");
-//     else {
-//         printf("Incorrect GPIO num: %d\n", pin_num);
-//         return;
-//     }
-//     fprintf(fd,"%d", val);
-//     fclose(fd);
-//     return ;
-// }
 
 int initI2cBus(char* bus, int address){
     int i2cFileDesc = open(bus, O_RDWR);
@@ -59,17 +44,13 @@ unsigned char* readI2cReg(int i2cFileDesc, unsigned char regAddr) {
         perror("I2C: Unable to write to i2c register.");
         exit(1);
     }// Now read the value and return it
-    char* value = (char*)malloc(sizeof(char)*7);
+    unsigned char* value = (unsigned char*)malloc(sizeof(char)*7);
    
     res = read(i2cFileDesc, value, 7);
     if (res != sizeof(char)*7) {
         perror("I2C: Unable to read from i2c register");
         exit(1);
     }
-    for (int i =0; i<7;i++) {
-        printf("val = %02x  ", value[i]);
-    }
-    printf("\n");
     return value;
 }
 
@@ -119,29 +100,29 @@ void* i2cHandlerInit(void* t){
         __int16_t y = (regVal[3] << 8 | regVal[4]);
         __int16_t z = (regVal[5] << 8 | regVal[6]) - Z_G_FORCE;
 
-        if(x < -THREASH || x > THREASH){
+        if(x < -X_Y_THRESH || x > X_Y_THRESH){
             beatBox_playBase();
             nanosleep(&time1, (struct timespec*)NULL);
             continue;
         }
 
-        if(y < -THREASH || y > THREASH){
+        if(y < -X_Y_THRESH || y > X_Y_THRESH){
             beatBox_playHiHat();
             nanosleep(&time1, (struct timespec*)NULL);
             continue;
         }
 
-        if(z < -THREASH || z > THREASH){
+        if(z < -Z_THRESH || z > Z_THRESH){
             beatBox_playSnare();
             nanosleep(&time1, (struct timespec*)NULL);
             continue;
         }
 
-        printf("x: %d, y: %d, z: %d\n", x, y, z);
+        // printf("x: %d, y: %d, z: %d\n", x, y, z);
         free(regVal);
         regVal = NULL;
     }
-
+    beatBoxCleanup();
     pthread_exit(NULL);
     return 0;
 }
