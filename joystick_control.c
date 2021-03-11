@@ -61,7 +61,7 @@ void* joystickthread(void* t){
     struct timespec time1;
     time1.tv_sec = 0;
     time1.tv_nsec = 330000000;
-    printf("Joystick thread...\n");
+    //printf("Joystick thread...\n");
     endJoystickThread = 1;
 
     exportPin(JSPUSH);

@@ -28,7 +28,7 @@ int bpm_change(char* snd_buffer, int sign) {
 
 int mode_change(char* recv_buffer, char* snd_buffer, int msg_len) {
     int val = 0;
-    printf("recv buf = %s\n", recv_buffer);
+    // printf("recv buf = %s\n", recv_buffer);
     if (strncmp(recv_buffer, "mode:0", msg_len)==0 ) {      //Set to beat to None!
         AudioMixer_setMode(0);
     }
@@ -46,7 +46,8 @@ int mode_change(char* recv_buffer, char* snd_buffer, int msg_len) {
 int default_command(char* snd_buff) {
     int vol = AudioMixer_getVolume();
     int bpm = AudioMixer_getBPM();
-    return snprintf(snd_buff, MAX_BUFF_SIZE, "def=%d:%d", vol, bpm);
+    int mode = AudioMixer_getMode();
+    return snprintf(snd_buff, MAX_BUFF_SIZE, "def=%d:%d:%d", vol, bpm, mode);
 }
 
 int set_drum(char* recv_buff, char* snd_buff, int msg_len) {
@@ -68,13 +69,13 @@ int stop_command(char* snd_buff) {
 
 int handle_packet(char recv_buffer[], char snd_buffer[], int msg_len) {
     int snd_len =0;
-    printf("Handling Packet!!\n");
+    // printf("Handling Packet!!\n");
 
     if (strncmp(recv_buffer, "default", msg_len) ==0) {
         snd_len = default_command(snd_buffer);
     }
     else if (strncmp(recv_buffer, "vol+", msg_len) ==0 ) {     //volume change msg
-        printf("Volume up command\n");
+        // printf("Volume up command\n");
         snd_len = volume_change(snd_buffer, 1);
     }
 
@@ -130,7 +131,7 @@ void* StartReceive(void* t) {
     char* send_msg = (char*) malloc(sizeof(char)*MAX_PACK_SIZE);
     while(stop_flag >-1) {                                  //have a flag set here to cancel this thread when done
         target_struct_len = sizeof(target_addr);
-        printf("waiting for packets on port %d....\n", PORT);
+        // printf("waiting for packets on port %d....\n", PORT);
         int msg_len = recvfrom(sock_fd, (char *)recv_buffer, MAX_BUFF_SIZE, 0, 
                 (struct sockaddr*)&target_addr, &target_struct_len);
         //printf("recv buffer = %s\n", recv_buffer);
@@ -157,7 +158,7 @@ void* StartReceive(void* t) {
             end = start + MAX_PACK_SIZE-1;
             //printf("Next packet\n!");
         }
-         printf("Sending the last packet\n");
+        //  printf("Sending the last packet\n");
 
         strncpy(send_msg, send_buffer + start, send_len);
 
@@ -170,6 +171,6 @@ void* StartReceive(void* t) {
     free(send_msg);
     send_msg = NULL;
     close(sock_fd);
-    printf("networkprogram ends\n");
+    // printf("networkprogram ends\n");
     pthread_exit(NULL);
 }

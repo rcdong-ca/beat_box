@@ -113,6 +113,16 @@ $(document).ready(function() {
         console.log("Res0 = " + res[0])
         $('#volumeid').val((res[0]))
         $('#bpmid').val(parseInt(res[1]))
+        if (res[2] == "0") {
+            $("#modeid").html("None") 
+        }
+        else if (res[2] == "1") {
+            $("#modeid").html("Rock#1") 
+        }
+        else if ( res[2] =="2") {
+            $("#modeid").html("Custom2") 
+        }
+        
     })
 
     socket.on("set drum", function() {
