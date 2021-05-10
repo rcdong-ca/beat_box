@@ -2,6 +2,8 @@ This is our solution to the Beat box assignment for our embedded programming cou
 <br />
 The task was to create an application that plays a drum-beat on the Beagle bone using the Zen cape audio output and its joystick for input.
 The audio is generated realtime using the ALSA API. There are different drum beat modes supported in this application <br />
+ <br />
+These sounds are from <b>Freesound.org, by menegass, used under Creative Commons License</b>  <br />
 1. No drum beat<br />
 2. Rock Beat<br />
 3. Our custom drum beat<br />
