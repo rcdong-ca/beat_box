@@ -21,7 +21,7 @@ By moving the beagle bone vertically, it will generate the base drum sound. Movi
 
 
 Node.js Web interface is also accompanied to help manage the controls in a more visual way and also tell you the state of the beagle bone too. <br />
-Both the application and node server is intended to run on the target.
+Both the music program and node server is intended to run on the target.
  <br />
 ![image](https://user-images.githubusercontent.com/52853478/117725639-44a9f100-b19a-11eb-8828-af9b58e452f0.png)
 
